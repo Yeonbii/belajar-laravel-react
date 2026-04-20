@@ -9,65 +9,6 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
-    {
-        $search = $request->input('search');
-        
-        return Inertia::render('Users/Index', [
-            'filters' => [
-                'search' => $search,
-            ],
-            'users' => User::query()
-                    ->when($search, function ($query, $search) {
-                        $query->where('name', 'like', "%{$search}%")
-                              ->orWhere('email', 'like', "%{$search}%");
-                    })
-                    ->latest()
-                    ->select('id', 'name', 'email')
-                    ->get()
-                    // ->withQueryString()
-        ]);
-    }
-    
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required',
-            'email' => 'required|email:dns|unique:users,email',
-            'password' => 'required|min:6'
-        ]);
-    
-        $validated['password'] = Hash::make($validated['password']);
-    
-        User::create($validated);
-    
-        //return redirect()->route('users.index');
-        return redirect()->back();
-    }
-    
-    public function listScroll(Request $request)
-    {
-        $search = $request->input('search');
-    
-        return Inertia::render('Users/ListScroll', [
-            'filters' => [
-                'search' => $search,
-            ],
-    
-            'users' => Inertia::scroll(fn () =>
-                User::query()
-                    ->when($search, function ($query, $search) {
-                        $query->where('name', 'like', "%{$search}%")
-                              ->orWhere('email', 'like', "%{$search}%");
-                    })
-                    ->latest()
-                    ->select('id', 'name', 'email')
-                    ->paginate(10)
-                    ->withQueryString() // 🔥 penting!
-            )
-        ]);
-    }
-
     public function show()
     {
         $user = [
@@ -77,5 +18,12 @@ class UserController extends Controller
         return Inertia::render('Users/Show', [
             'user' => $user
         ]);
+    }
+    
+    public function index()
+    {
+        return Inertia::render('Users/Index', [
+            'users' => User::latest()->get()
+          ]);
     }
 }
