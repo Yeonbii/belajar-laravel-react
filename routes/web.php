@@ -8,3 +8,8 @@ Route::get('/', function () {
 });
 
 Route::get('/show', [UserController::class, 'show']);
+
+Route::get('/users', [UserController::class, 'index'])->name('users.index');
+Route::post('/users', [UserController::class, 'store'])->name('users.store');
+
+Route::get('/users/list-scroll', [UserController::class, 'listScroll'])->name('users.list-scroll');
