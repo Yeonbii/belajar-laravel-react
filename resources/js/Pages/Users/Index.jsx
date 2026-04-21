@@ -15,7 +15,7 @@ function Avatar({ name }) {
     }, [name]);
 
     return (
-        <div className="w-9 h-9 bg-blue-300 text-white rounded-full flex justify-center items-center font-semibold shrink-0">
+        <div className="w-9 h-9 bg-violet-300 text-white rounded-full flex justify-center items-center font-semibold shrink-0">
             {initials}
         </div>
     );
@@ -123,13 +123,13 @@ function UserList({ items, pagination }) {
 
     return (
         <div id={anchor} className="p-6 w-full md:w-1/2">
-            <h2 className="text-2xl font-bold mb-4 sticky top-0 py-3 border-b bg-white z-10 text-slate-800">
+            <h2 className="text-2xl font-bold mb-4 sticky top-0 py-3 border-b-2 border-violet-600 bg-white z-10 text-slate-800">
                 User List
             </h2>
 
             {items.length > 0 ? (
                 <ul className="space-y-3">
-                    {items.map(item => (
+                    {items.map((item) => (
                         <UserItem key={item.id} item={item} />
                     ))}
                 </ul>
@@ -155,21 +155,21 @@ function UserForm() {
                     <div className="mb-6">
                         <label
                             for="name"
-                            className="block mb-2.5 text-sm font-medium text-heading"
+                            className="block mb-2.5 text-sm font-medium"
                         >
                             Name
                         </label>
                         <input
                             type="text"
                             id="name"
-                            className="border-2 text-heading text-sm rounded block w-full px-3 py-2.5 shadow-xs"
+                            className="border-2 border-slate-300 bg-slate-50 focus:outline-violet-500 text-sm rounded block w-full px-3 py-2.5 shadow-xs"
                             placeholder="Your Name"
                             required
                         />
                     </div>
                     <button
                         type="submit"
-                        className="text-white bg-blue-300 box-border border border-transparent hover:bg-blue-600 focus:ring-4 focus:ring-blue-600 shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
+                        className="text-white bg-violet-500 border border-transparent hover:bg-violet-600 focus:outline-2 focus:outline-offset-2 focus:outline-violet-600 shadow-xs font-bold rounded-lg text-xs px-6 py-2"
                     >
                         Submit
                     </button>
