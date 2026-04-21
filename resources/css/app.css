@@ -9,3 +9,35 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+@layer base {
+  /* Mengatur scroll halus untuk seluruh halaman */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Style Scrollbar Global agar terlihat "Bersih" */
+  ::-webkit-scrollbar {
+    width: 6px;  /* Sangat tipis untuk vertikal */
+    height: 6px; /* Sangat tipis untuk horizontal */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent; /* Background transparan agar bersih */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #d1d5db; /* Warna abu-abu muda (Tailwind gray-300) */
+    border-radius: 10px; /* Membuat ujungnya membulat */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af; /* Sedikit lebih gelap saat di-hover (gray-400) */
+  }
+
+  /* Khusus Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db transparent;
+  }
+}
