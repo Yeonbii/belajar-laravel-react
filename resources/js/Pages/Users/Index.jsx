@@ -144,6 +144,41 @@ function UserList({ items, pagination }) {
     );
 }
 
+function UserForm() {
+    return (
+        <div className="p-6 w-full md:w-1/2">
+            <h2 className="text-2xl font-bold mb-4 text-slate-800">
+                Create User
+            </h2>
+            <div className="p-4 border-2 border-slate-200 rounded-lg">
+                <form>
+                    <div className="mb-6">
+                        <label
+                            for="name"
+                            className="block mb-2.5 text-sm font-medium text-heading"
+                        >
+                            Name
+                        </label>
+                        <input
+                            type="text"
+                            id="name"
+                            className="border-2 text-heading text-sm rounded block w-full px-3 py-2.5 shadow-xs"
+                            placeholder="Your Name"
+                            required
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className="text-white bg-blue-300 box-border border border-transparent hover:bg-blue-600 focus:ring-4 focus:ring-blue-600 shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
+                    >
+                        Submit
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+}
+
 /* =======================
    PAGE COMPONENT
 ======================= */
@@ -159,15 +194,7 @@ export default function Index({ users }) {
 
             <div className="flex flex-wrap max-w-7xl mx-auto">
                 {/* Form */}
-                <div className="p-6 w-full md:w-1/2">
-                    <h2 className="text-2xl font-bold mb-4 text-slate-800">
-                        Create User
-                    </h2>
-                    <div className="p-4 border-2 border-dashed border-slate-200 rounded-lg text-slate-400 text-center">
-                        Form Input Here
-                    </div>
-                </div>
-
+                <UserForm />
                 {/* List */}
                 <UserList items={items} pagination={pagination} />
             </div>
