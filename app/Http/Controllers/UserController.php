@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+// use Illuminate\Http\Request;
+// use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -19,11 +19,11 @@ class UserController extends Controller
             'user' => $user
         ]);
     }
-    
+
     public function index()
     {
         return Inertia::render('Users/Index', [
-            'users' => User::latest()->get()
-          ]);
+            'users' => User::latest()->paginate(10)
+        ]);
     }
 }
