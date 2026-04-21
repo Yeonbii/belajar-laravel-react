@@ -33,7 +33,7 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
+            'email'    => ['required', 'email:dns', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
@@ -43,6 +43,8 @@ class UserController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        return redirect()->route('users.index');
+        return redirect()
+            ->route('users.index')
+            ->with('success', 'User berhasil dibuat!'); // ← tambah ini
     }
 }

@@ -1,5 +1,5 @@
-import { Head, Link, useForm } from "@inertiajs/react";
-import { useMemo, useState, useCallback } from "react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 
 /* =======================
    UI COMPONENTS
@@ -110,6 +110,7 @@ function InputField({
         <div className="mb-5">
             <label htmlFor={id} className="block mb-2.5 text-sm font-medium">
                 {label}
+                {required && <span className="text-red-500 ml-1">*</span>}
             </label>
             <input
                 type={type}
@@ -120,7 +121,7 @@ function InputField({
                     error ? "border-red-400" : "border-slate-300"
                 }`}
                 placeholder={placeholder}
-                required={required}
+                // ← tidak pakai required di sini, validasi sepenuhnya dari Laravel
             />
             {error && <p className="mt-1.5 text-xs text-red-500">{error}</p>}
         </div>
@@ -134,7 +135,7 @@ function PasswordField({
     value,
     onChange,
     error,
-    required=false,
+    required = false,
 }) {
     const [show, setShow] = useState(false);
     const toggle = useCallback(() => setShow((prev) => !prev), []);
@@ -143,6 +144,7 @@ function PasswordField({
         <div className="mb-5">
             <label htmlFor={id} className="block mb-2.5 text-sm font-medium">
                 {label}
+                {required && <span className="text-red-500 ml-1">*</span>}
             </label>
             <div className="relative">
                 <input
@@ -154,11 +156,12 @@ function PasswordField({
                         error ? "border-red-400" : "border-slate-300"
                     }`}
                     placeholder={placeholder}
-                    required={required}
+                    // ← tidak pakai required di sini
                 />
                 <button
                     type="button"
                     onClick={toggle}
+                    tabIndex={-1} // ← tambah ini
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                     aria-label={
                         show ? "Sembunyikan password" : "Tampilkan password"
@@ -203,6 +206,59 @@ function PasswordField({
                 </button>
             </div>
             {error && <p className="mt-1.5 text-xs text-red-500">{error}</p>}
+        </div>
+    );
+}
+
+function Alert({ type, message, submitCount }) {
+    const [visible, setVisible] = useState(false);
+    const [leaving, setLeaving] = useState(false);
+
+    const close = useCallback(() => {
+        setLeaving(true);
+        setTimeout(() => {
+            setVisible(false);
+            setLeaving(false);
+        }, 300);
+    }, []);
+
+    // submitCount sebagai sinyal — setiap angkanya berubah, alert tampil ulang
+    useEffect(() => {
+        if (!message || submitCount === 0) return;
+
+        setLeaving(false);
+        setVisible(true);
+
+        const timer = setTimeout(() => close(), 4000);
+        return () => clearTimeout(timer);
+    }, [submitCount]); // ← sengaja hanya submitCount, bukan message
+
+    if (!visible || !message) return null;
+
+    const styles = {
+        success: "bg-green-50 border-green-400 text-green-700",
+        error: "bg-red-50 border-red-400 text-red-700",
+    };
+
+    return (
+        <div
+            className={`flex items-center justify-between gap-2 border-l-4 px-4 py-3 rounded-r-lg text-sm mb-5 transition-opacity duration-300 ${styles[type]} ${leaving ? "opacity-0" : "opacity-100"}`}
+        >
+            <div className="flex items-center gap-2">
+                <span className="font-bold">
+                    {type === "success" ? "✓" : "✕"}
+                </span>
+                <span>{message}</span>
+            </div>
+            <button
+                type="button"
+                onClick={close}
+                tabIndex={-1}
+                className="ml-2 text-current opacity-50 hover:opacity-100 font-bold text-base leading-none"
+                aria-label="Tutup notifikasi"
+            >
+                ×
+            </button>
         </div>
     );
 }
@@ -260,6 +316,9 @@ function UserList({ items, pagination }) {
 }
 
 function UserForm() {
+    const { flash } = usePage().props;
+    const [submitCount, setSubmitCount] = useState(0);
+
     const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
         email: "",
@@ -267,10 +326,18 @@ function UserForm() {
         password_confirmation: "",
     });
 
+    const errorMessage =
+        Object.keys(errors).length > 0
+            ? "Ada inputan wajib yang belum diisi atau tidak valid."
+            : null;
+
     function handleSubmit(e) {
         e.preventDefault();
-        post('/users', {
+        post("/users", {
             onSuccess: () => reset(),
+            // Naikkan counter setiap kali ada response dari server,
+            // baik sukses maupun error — supaya alert selalu muncul ulang
+            onFinish: () => setSubmitCount((c) => c + 1),
         });
     }
 
@@ -279,6 +346,18 @@ function UserForm() {
             <h2 className="text-2xl font-bold mb-4 text-slate-800">
                 Create User
             </h2>
+
+            <Alert
+                type="success"
+                message={flash.success}
+                submitCount={submitCount}
+            />
+            <Alert
+                type="error"
+                message={errorMessage}
+                submitCount={submitCount}
+            />
+
             <div className="p-4 border-2 border-slate-200 rounded-lg">
                 <form onSubmit={handleSubmit}>
                     <InputField
@@ -288,7 +367,7 @@ function UserForm() {
                         value={data.name}
                         onChange={(e) => setData("name", e.target.value)}
                         error={errors.name}
-                        // required
+                        required
                     />
                     <InputField
                         label="Email"
@@ -298,7 +377,7 @@ function UserForm() {
                         value={data.email}
                         onChange={(e) => setData("email", e.target.value)}
                         error={errors.email}
-                        // required
+                        required
                     />
                     <PasswordField
                         label="Password"
@@ -307,7 +386,7 @@ function UserForm() {
                         value={data.password}
                         onChange={(e) => setData("password", e.target.value)}
                         error={errors.password}
-                        // required
+                        required
                     />
                     <PasswordField
                         label="Confirm Password"
@@ -317,7 +396,7 @@ function UserForm() {
                         onChange={(e) =>
                             setData("password_confirmation", e.target.value)
                         }
-                        // required
+                        required
                     />
                     <button
                         type="submit"
