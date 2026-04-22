@@ -67,3 +67,35 @@ APP_FAKER_LOCALE=id_ID
 ```sh
 php artisan config:clear
 ```
+
+### Cara Menambahkan Atribut Pada Table Lama
+-  Buat migration baru 
+```sh
+php artisan make:migration add_avatar_to_users_table
+```
+
+- Masukkan atribut yang ingin dibuat pada file baru tersebut. Setelah itu jalankan ini:
+```sh
+php artisan migrate
+```
+
+- Lalu jalankan ini untuk menghubungkan `storage/app/public/` (tempat file disimpan) dengan folder `public/storage/` (yang bisa diakses browser):
+```sh
+php artisan storage:link
+```
+
+- Lalu tambahkan atribut tersebut pada `$fillable` pada model table.
+
+- Setelah itu, JANGAN LUPA perbaharui semua kode yuang berhubungan dengan atribut atau table tersebut, seperti method `create`, `update`, dll.
+
+### Reset Isi Folder `public/storage/`
+- Jalankan ini:
+```sh
+php artisan tinker
+```
+
+- Lalu ini:
+```sh
+Storage::disk('public')->deleteDirectory('/');
+Storage::disk('public')->makeDirectory('/');
+```

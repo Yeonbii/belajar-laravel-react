@@ -5,14 +5,23 @@ import { useMemo, useState, useCallback, useEffect } from "react";
    UI COMPONENTS
 ======================= */
 
-function Avatar({ name }) {
+function Avatar({ name, src }) {
     const initials = useMemo(() => {
         if (!name) return "";
         const words = name.trim().split(" ");
         if (words.length === 1) return words[0].substring(0, 2).toUpperCase();
-
         return (words[0][0] + words[1][0]).toUpperCase();
     }, [name]);
+
+    if (src) {
+        return (
+            <Img
+                src={src}
+                alt={name}
+                className="w-9 h-9 rounded-full object-cover shrink-0"
+            />
+        );
+    }
 
     return (
         <div className="w-9 h-9 bg-violet-300 text-white text-xs rounded-full flex justify-center items-center font-semibold shrink-0">
@@ -210,6 +219,42 @@ function PasswordField({
     );
 }
 
+function AvatarField({ value, onChange, error, resetKey }) {
+    const preview = value ? URL.createObjectURL(value) : null;
+
+    return (
+        <div className="mb-5">
+            <label className="block mb-2.5 text-sm font-medium">
+                Avatar
+            </label>
+            <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-slate-100 border-2 border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
+                    {preview ? (
+                        <Img src={preview} alt="preview" className="w-full h-full object-cover" />
+                    ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                        </svg>
+                    )}
+                </div>
+                <div className="flex-1">
+                    <input
+                        key={resetKey}
+                        type="file"
+                        accept="image/jpg,image/jpeg,image/png,image/webp"
+                        onChange={onChange}
+                        className="block w-full text-sm text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border file:border-slate-300 file:text-xs file:font-medium file:bg-white file:text-slate-600 hover:file:bg-slate-50 cursor-pointer"
+                    />
+                    <p className="mt-1.5 text-xs text-slate-400">
+                        JPG, PNG, WEBP — maks. 2MB
+                    </p>
+                </div>
+            </div>
+            {error && <p className="mt-1.5 text-xs text-red-500">{error}</p>}
+        </div>
+    );
+}
+
 function Alert({ type, message, submitCount }) {
     const [visible, setVisible] = useState(false);
     const [leaving, setLeaving] = useState(false);
@@ -263,15 +308,45 @@ function Alert({ type, message, submitCount }) {
     );
 }
 
+function Img({ src, alt, className = "", fallback = null }) {
+    const [error, setError] = useState(false);
+
+    // Kalau gagal load dan ada fallback, tampilkan fallback
+    if (error) {
+        return fallback ?? (
+            <div className={`bg-slate-100 flex items-center justify-center ${className}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-1/2 h-1/2 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M13.5 10.5h.008v.008H13.5V10.5z" />
+                </svg>
+            </div>
+        );
+    }
+
+    return (
+        <img
+            src={src}
+            alt={alt}
+            className={className}
+            loading="lazy"       // browser hanya load gambar kalau sudah mendekati layar
+            decoding="async"     // decode gambar tidak memblokir render halaman
+            onError={() => setError(true)}
+        />
+    );
+}
+
 /* =======================
    FEATURE COMPONENTS
 ======================= */
 
 function UserItem({ item }) {
+    // Kalau ada avatar, buat URL lengkapnya
+    // "/storage/avatars/namafile.jpg"
+    const avatarUrl = item.avatar ? `/storage/${item.avatar}` : null;
+
     return (
         <li className="border-b border-slate-100 p-3 hover:bg-slate-50 transition-colors rounded-lg">
             <div className="flex items-center gap-4">
-                <Avatar name={item.name} />
+                <Avatar name={item.name} src={avatarUrl} />
                 <div className="flex flex-col min-w-0">
                     <span className="font-semibold text-slate-900 truncate">
                         {item.name}
@@ -318,12 +393,14 @@ function UserList({ items, pagination }) {
 function UserForm() {
     const { flash } = usePage().props;
     const [submitCount, setSubmitCount] = useState(0);
+    const [fileResetKey, setFileResetKey] = useState(0);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
         email: "",
         password: "",
         password_confirmation: "",
+        avatar: null,
     });
 
     const errorMessage =
@@ -334,9 +411,11 @@ function UserForm() {
     function handleSubmit(e) {
         e.preventDefault();
         post("/users", {
-            onSuccess: () => reset(),
-            // Naikkan counter setiap kali ada response dari server,
-            // baik sukses maupun error — supaya alert selalu muncul ulang
+            forceFormData: true, // ← wajib ada kalau form punya file
+            onSuccess: () => {
+                reset();
+                setFileResetKey((k) => k + 1); // ← naikkan supaya input file dibuat ulang
+            },
             onFinish: () => setSubmitCount((c) => c + 1),
         });
     }
@@ -360,6 +439,12 @@ function UserForm() {
 
             <div className="p-4 border-2 border-slate-200 rounded-lg">
                 <form onSubmit={handleSubmit}>
+                    <AvatarField
+                        value={data.avatar}
+                        onChange={(e) => setData("avatar", e.target.files[0])}
+                        error={errors.avatar}
+                        resetKey={fileResetKey}
+                    />
                     <InputField
                         label="Name"
                         id="name"

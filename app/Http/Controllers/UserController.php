@@ -32,19 +32,29 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'email:dns', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'name'      => ['required', 'string', 'max:255'],
+            'email'     => ['required', 'email:dns', 'max:255', 'unique:users,email'],
+            'password'  => ['required', 'string', 'min:8', 'confirmed'],
+            'avatar'    => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            //                           ↑ harus file gambar    ↑ max 2MB
         ]);
+
+        $avatarPath = null;
+        if ($request->hasFile('avatar')) {
+            // Simpan ke storage/app/public/avatars/
+            // Laravel otomatis beri nama unik supaya tidak bentrok
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        }
 
         User::create([
             'name'     => $validated['name'],
             'email'    => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'avatar'   => $avatarPath, // null kalau tidak upload
         ]);
 
         return redirect()
             ->route('users.index')
-            ->with('success', 'User berhasil dibuat!'); // ← tambah ini
+            ->with('success', 'User berhasil dibuat!');
     }
 }
