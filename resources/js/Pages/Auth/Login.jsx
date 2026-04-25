@@ -9,6 +9,7 @@ export default function Login() {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: "",
         password: "",
+        remember: false
     });
 
     const [submitCount, setSubmitCount] = useState(0);
@@ -18,7 +19,7 @@ export default function Login() {
         e.preventDefault();
         post("/login", {
             onError: () => reset("password"),
-            onFinish: () => setSubmitCount((c) => c + 1),
+            onFinish: () => setSubmitCount(c => c + 1)
         });
     }
 
@@ -39,7 +40,7 @@ export default function Login() {
                         type="email"
                         placeholder="your@email.com"
                         value={data.email}
-                        onChange={(e) => setData("email", e.target.value)}
+                        onChange={e => setData("email", e.target.value)}
                         error={errors.email}
                     />
                     <PasswordField
@@ -47,9 +48,27 @@ export default function Login() {
                         id="password"
                         placeholder="Min. 8 karakter"
                         value={data.password}
-                        onChange={(e) => setData("password", e.target.value)}
+                        onChange={e => setData("password", e.target.value)}
                         error={errors.password}
                     />
+
+                    <div class="flex items-center mb-4">
+                        <input
+                            id="remember-checkbox"
+                            type="checkbox"
+                            checked={data.remember}
+                            onChange={e =>
+                                setData("remember", e.target.checked)
+                            }
+                            className="w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft"
+                        />
+                        <label
+                            forHtml="remember-checkbox"
+                            className="select-none ms-2 text-sm font-medium text-heading"
+                        >
+                            Remember me
+                        </label>
+                    </div>
 
                     <button
                         type="submit"

@@ -24,9 +24,11 @@ class AuthController extends Controller
             'email'    => ['required', 'email'],
             'password' => ['required'],
         ]);
+        
+        $remember = $request->boolean('remember'); // 🔥 penting
 
         // Coba login
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
             // return redirect()->intended('dashboard'); // Ini ke url (/dashboard)
             return redirect()->intended(route('dashboard'));
@@ -46,6 +48,6 @@ class AuthController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect()->back();
     }
 }
