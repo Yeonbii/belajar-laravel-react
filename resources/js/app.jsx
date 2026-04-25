@@ -1,26 +1,11 @@
-import { createInertiaApp } from "@inertiajs/react";
-import { createRoot } from "react-dom/client";
-import { StrictMode } from "react";
+import { createInertiaApp } from '@inertiajs/react'
 
 createInertiaApp({
     title: (title) => `${title} - Belajar Laravel React`,
-    resolve: (name) => {
-        const pages = import.meta.glob("./Pages/**/*.jsx");
-        return pages[`./Pages/${name}.jsx`]();
-    },
+    strictMode: true,
     progress: {
-        // Gunakan kode HEX agar warna muncul
-        color: "#7c3aed",
-
-        // Kalau mau pakai default, cukup biarkan includeCSS: true
+        color: "oklch(70.4% 0.14 182.503)", // Warna primary di app.css
         includeCSS: true,
-        showSpinner: true, // Bagus untuk tampilan yang lebih "clean"
+        showSpinner: true,
     },
-    setup({ el, App, props }) {
-        createRoot(el).render(
-            <StrictMode>
-                <App {...props} />
-            </StrictMode>,
-        );
-    },
-});
+})

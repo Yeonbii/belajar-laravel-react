@@ -41,6 +41,9 @@ class HandleInertiaRequests extends Middleware
                 'success' => session('success'),
                 'error'   => session('error'),
             ],
+            'auth' => [
+                'user' => $request->user(),
+            ],
         ];
     }
 }
