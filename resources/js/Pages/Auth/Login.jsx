@@ -1,15 +1,15 @@
 import { Head, useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import GuestLayout from "@/Layouts/GuestLayout";
-import InputField from "@/Components/ui/InputField";
-import PasswordField from "@/Components/ui/PasswordField";
-import Alert from "@/Components/ui/Alert";
+import Alert from "@/Components/UI/Alert";
+import InputField from "@/Components/UI/Form/InputField";
+import PasswordField from "@/Components/UI/Form/PasswordField";
 
 export default function Login() {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: "",
         password: "",
-        remember: false
+        remember: false,
     });
 
     const [submitCount, setSubmitCount] = useState(0);
@@ -19,7 +19,7 @@ export default function Login() {
         e.preventDefault();
         post("/login", {
             onError: () => reset("password"),
-            onFinish: () => setSubmitCount(c => c + 1)
+            onFinish: () => setSubmitCount((c) => c + 1),
         });
     }
 
@@ -27,6 +27,10 @@ export default function Login() {
         <>
             <Head title="Login" />
             <GuestLayout>
+                <h1 className="text-3xl font-bold mb-4 text-slate-800 text-ce">
+                    Login
+                </h1>
+
                 <Alert
                     type="error"
                     message={flash.error}
@@ -40,7 +44,7 @@ export default function Login() {
                         type="email"
                         placeholder="your@email.com"
                         value={data.email}
-                        onChange={e => setData("email", e.target.value)}
+                        onChange={(e) => setData("email", e.target.value)}
                         error={errors.email}
                     />
                     <PasswordField
@@ -48,22 +52,22 @@ export default function Login() {
                         id="password"
                         placeholder="Min. 8 karakter"
                         value={data.password}
-                        onChange={e => setData("password", e.target.value)}
+                        onChange={(e) => setData("password", e.target.value)}
                         error={errors.password}
                     />
 
-                    <div class="flex items-center mb-4">
+                    <div className="flex items-center mb-4">
                         <input
                             id="remember-checkbox"
                             type="checkbox"
                             checked={data.remember}
-                            onChange={e =>
+                            onChange={(e) =>
                                 setData("remember", e.target.checked)
                             }
                             className="w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft"
                         />
                         <label
-                            forHtml="remember-checkbox"
+                            htmlFor="remember-checkbox"
                             className="select-none ms-2 text-sm font-medium text-heading"
                         >
                             Remember me

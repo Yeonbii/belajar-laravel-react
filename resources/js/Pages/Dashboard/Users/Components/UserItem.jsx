@@ -1,4 +1,4 @@
-import Avatar from "@/Components/ui/Avatar";
+import Avatar from "@/Components/UI/Avatar";
 
 export default function UserItem({ item }) {
     // Kalau ada avatar, buat URL lengkapnya

@@ -1,9 +1,9 @@
 import { useForm, usePage } from "@inertiajs/react";
 import { useState } from "react";
-import Alert from "@/Components/ui/Alert";
-import AvatarField from "@/Components/ui/AvatarField";
-import InputField from "@/Components/ui/InputField";
-import PasswordField from "@/Components/ui/PasswordField";
+import Alert from "@/Components/UI/Alert";
+import AvatarField from "@/Components/UI/Form/AvatarField";
+import InputField from "@/Components/UI/Form/InputField";
+import PasswordField from "@/Components/UI/Form/PasswordField";
 
 export default function UserForm() {
     const { flash } = usePage().props;
@@ -36,7 +36,7 @@ export default function UserForm() {
     }
 
     return (
-        <div className="p-6 w-full md:w-1/2">
+        <div className="w-full md:w-1/2">
             <h2 className="text-2xl font-bold mb-4 text-slate-800">
                 Create User
             </h2>

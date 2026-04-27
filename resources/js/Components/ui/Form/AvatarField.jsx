@@ -1,4 +1,4 @@
-import Img from "./Img";
+import Img from "../Img";
 
 export default function AvatarField({ value, onChange, error, resetKey }) {
     const preview = value ? URL.createObjectURL(value) : null;
