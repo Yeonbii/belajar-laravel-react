@@ -7,12 +7,17 @@ export default function UserList({ items, pagination }) {
     return (
         <div
             id={anchor}
-            className="w-full md:w-1/2 md:h-screen md:flex md:flex-col"
+            className="w-full md:w-1/2 flex flex-col h-[calc(100vh-2rem)]"
         >
-            <h2 className="text-2xl font-bold mb-4 py-3 border-b-2 border-primary-dark z-10 text-slate-800 sticky top-0 md:static">
-                User List
-            </h2>
-            <div className="md:flex-auto md:overflow-y-auto">
+            {/* Header */}
+            <div className="shrink-0">
+                <h2 className="text-2xl font-bold py-3 border-b-2 border-primary-dark text-slate-800 bg-white">
+                    User List
+                </h2>
+            </div>
+
+            {/* List */}
+            <div className="flex-1 overflow-y-auto py-4 pr-1">
                 {items.length > 0 ? (
                     <ul className="space-y-3">
                         {items.map((item) => (
@@ -26,7 +31,10 @@ export default function UserList({ items, pagination }) {
                 )}
             </div>
 
-            <Pagination pagination={pagination} anchor={anchor} />
+            {/* Pagination */}
+            <div className="shrink-0 pt-3 bg-white">
+                <Pagination pagination={pagination} anchor={anchor} />
+            </div>
         </div>
     );
 }

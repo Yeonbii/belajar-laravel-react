@@ -21,7 +21,7 @@ export default function DashboardHeader({ username, avatarUrl, openSidebar }) {
                 <span className="text-sm text-gray-500 hidden sm:block">
                     {username}
                 </span>
-                <Avatar name={username} src={avatarUrl} />
+                <Avatar name={username} avatarUrl={avatarUrl} />
             </div>
         </header>
     );

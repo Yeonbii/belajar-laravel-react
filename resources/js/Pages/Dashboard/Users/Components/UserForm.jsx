@@ -36,7 +36,7 @@ export default function UserForm() {
     }
 
     return (
-        <div className="w-full md:w-1/2">
+        <div className="w-full md:flex-1">
             <h2 className="text-2xl font-bold mb-4 text-slate-800">
                 Create User
             </h2>

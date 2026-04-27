@@ -1,7 +1,11 @@
 import { useMemo } from "react";
 import Img from "./Img";
 
-export default function Avatar({ name, src = null }) {
+export default function Avatar({ name, avatarUrl = null }) {
+    // Kalau ada avatar, buat URL lengkapnya
+    // "/storage/avatars/namafile.jpg"
+    const avatarSrc = avatarUrl ? `/storage/${avatarUrl}` : null;
+
     const initials = useMemo(() => {
         if (!name) return "";
         const words = name.trim().split(" ");
@@ -9,10 +13,10 @@ export default function Avatar({ name, src = null }) {
         return (words[0][0] + words[1][0]).toUpperCase();
     }, [name]);
 
-    if (src) {
+    if (avatarSrc) {
         return (
             <Img
-                src={src}
+                src={avatarSrc}
                 alt={name}
                 className="w-9 h-9 rounded-full object-cover shrink-0"
             />

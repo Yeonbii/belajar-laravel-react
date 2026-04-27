@@ -13,7 +13,7 @@ export default function DashboardLayout({ children }) {
     }, [sidebarOpen]);
 
     const { props } = usePage();
-    const user = props?.auth?.user;
+    const user = props.auth.user;
 
     return (
         <div className="flex h-screen overflow-hidden">
