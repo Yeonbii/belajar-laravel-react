@@ -25,7 +25,7 @@ export default function UserForm() {
 
     function handleSubmit(e) {
         e.preventDefault();
-        post("/users", {
+        post("/dashboard/users", {
             forceFormData: true, // ← wajib ada kalau form punya file
             onSuccess: () => {
                 reset();
