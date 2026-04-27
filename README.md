@@ -7,7 +7,7 @@ Selamat datang siapa pun itu, semoga bermanfaat dan nikmati waktumu 😏
 - Setelah clone, jalankan command ini
 
 ```sh
-cd belajar-livewire
+cd belajar-laravel-react
 composer install
 cp .env.example .env
 php artisan key:generate
@@ -186,4 +186,10 @@ public function handle()
 
 ```sh
 composer run reset-app
+```
+
+### Agar Laptop Lebih Peka Terhadap Perubahan Nama Folder/File
+- Jalankan ini
+```sh
+git config core.ignorecase false
 ```
