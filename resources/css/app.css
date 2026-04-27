@@ -13,7 +13,7 @@
 
     --color-primary: oklch(70.4% 0.14 182.503); /* Teal 500 */
     --color-primary-light: oklch(85.5% 0.138 181.071); /* Teal 300 */
-    --color-primary-dark: oklch(60% 0.118 184.704); /* Teal 600 */
+    --color-primary-dark: oklch(51.1% 0.096 186.391); /* Teal 700 */
 }
 
 @layer base {

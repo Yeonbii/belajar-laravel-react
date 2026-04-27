@@ -15,15 +15,15 @@ export default function DashboardSidebar({ sidebarOpen }) {
         <aside
             className={`
                 fixed md:static z-30 h-full w-56
-                bg-gray-900 text-white flex flex-col
+                bg-primary-dark text-white flex flex-col
                 transition-transform duration-300 ease-in-out
                 ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
             `}
         >
             {/* Logo */}
-            <div className="flex items-center gap-3 px-4 py-5 border-b border-white/10">
+            <div className="flex items-center gap-3 px-4 py-5 border-b border-primary">
                 <span className="text-xl">🚀</span>
-                <span className="font-bold text-sm tracking-wide uppercase text-white/80">
+                <span className="font-bold text-sm tracking-wide uppercase">
                     {appName}
                 </span>
             </div>
@@ -40,8 +40,8 @@ export default function DashboardSidebar({ sidebarOpen }) {
                             text-sm font-medium transition-colors duration-150
                             ${
                                 isActive(item.href)
-                                    ? "bg-indigo-600 text-white"
-                                    : "text-white/60 hover:bg-white/10 hover:text-white"
+                                    ? "bg-primary"
+                                    : "hover:bg-white/10"
                             }
                         `}
                     >
@@ -52,13 +52,12 @@ export default function DashboardSidebar({ sidebarOpen }) {
             </nav>
 
             {/* Logout */}
-            <div className="px-2 py-3 border-t border-white/10">
+            <div className="px-2 py-3 border-t border-primary">
                 <Link
                     href="/logout"
                     method="post"
                     as="button"
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg
-                        text-red-400 hover:bg-red-500/20 hover:text-red-300
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-red-500/20
                         text-sm font-medium transition-colors duration-150"
                 >
                     <span className="text-base">🚪</span>

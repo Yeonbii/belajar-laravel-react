@@ -13,7 +13,7 @@ export default function Index({ users }) {
             <Head title="Users Page" />
 
             <DashboardLayout>
-                <div className="flex flex-wrap w-full max-w-7xl mx-auto gap-4">
+                <div className="flex flex-wrap w-full max-w-7xl mx-auto h-full">
                     {/* Form */}
                     <UserForm />
                     {/* List */}

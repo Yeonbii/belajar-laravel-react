@@ -8,7 +8,9 @@ export default function Index() {
         <>
             <Head title="Dashboard" />
             <DashboardLayout>
-                <h1>Hello, {auth.user.name} 👋</h1>
+                <div className="p-4">
+                    <h1>Hello, {auth.user.name} 👋</h1>
+                </div>
             </DashboardLayout>
         </>
     );
