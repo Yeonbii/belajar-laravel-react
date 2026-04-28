@@ -3,13 +3,30 @@ import { useState, useEffect } from "react";
 import DashboardSidebar from "../Components/Layout/DashboardSidebar";
 import DashboardHeader from "../Components/Layout/DashboardHeader";
 
+function getSidebarState() {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("sidebarOpen") === "true";
+}
+
 export default function DashboardLayout({ children }) {
-    const [sidebarOpen, setSidebarOpen] = useState(() => {
-        return localStorage.getItem("sidebarOpen") === "true";
-    });
+    const [sidebarOpen, setSidebarOpen] = useState(getSidebarState);
 
     useEffect(() => {
         localStorage.setItem("sidebarOpen", sidebarOpen);
+    }, [sidebarOpen]);
+
+    // Kunci scroll saat sidebar terbuka
+    useEffect(() => {
+        if (sidebarOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+
+        // Cleanup saat komponen hilang
+        return () => {
+            document.body.style.overflow = "";
+        };
     }, [sidebarOpen]);
 
     const { props } = usePage();

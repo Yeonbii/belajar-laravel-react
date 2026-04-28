@@ -12,5 +12,7 @@
     <body>
         {{-- <x-inertia::app /> --}}
         @inertia
+        
+        <script src="https://kit.fontawesome.com/fffa6787c5.js" crossorigin="anonymous"></script>
     </body>
 </html>
