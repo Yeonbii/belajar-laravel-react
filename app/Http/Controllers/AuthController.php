@@ -6,37 +6,30 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
-use Laravel\Socialite\Socialite;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
-    // Tampilkan halaman login
     public function index(): Response
     {
         return Inertia::render('Auth/Login');
     }
 
-    // Proses login
     public function authenticate(Request $request): RedirectResponse
     {
-        // Validasi input
         $credentials = $request->validate([
             'email'    => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        $remember = $request->boolean('remember'); // 🔥 penting
-
-        // Coba login
-        if (Auth::attempt($credentials, $remember)) {
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            // return redirect()->intended('dashboard'); // Ini ke url (/dashboard)
             return redirect()->intended(route('dashboard'));
         }
 
-        // Kalau gagal, kembalikan error
         return back()
             ->with('error', 'Email atau password yang kamu masukkan salah.')
             ->onlyInput('email');
@@ -45,35 +38,52 @@ class AuthController extends Controller
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
-
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
-        return redirect()->back();
+        return redirect()->route('login');
     }
 
-    public function redirect()
+    public function redirect(): RedirectResponse
     {
         return Socialite::driver('google')->redirect();
     }
 
-    public function callback()
+    public function callback(): RedirectResponse
     {
         $googleUser = Socialite::driver('google')->user();
+        $avatarPath = $this->saveGoogleAvatar($googleUser->id, $googleUser->avatar);
 
         $user = User::updateOrCreate(
             ['email' => $googleUser->email],
             [
-                'name' => $googleUser->name,
+                'name'      => $googleUser->name,
                 'google_id' => $googleUser->id,
-                'avatar' => $googleUser->avatar,
+                'avatar'    => $avatarPath,
             ]
         );
-        
-        // ✅ aktifkan remember me
-        Auth::login($user, true);
 
-        return redirect('/dashboard');
+        Auth::login($user, remember: true);
+
+        return redirect()->route('dashboard');
+    }
+
+    // ============================================================
+    // Private Helpers
+    // ============================================================
+
+    private function saveGoogleAvatar(string $googleId, string $avatarUrl): string
+    {
+        $path = "avatars/{$googleId}.jpg";
+
+        // Kalau sudah pernah disimpan, tidak perlu download ulang
+        if (Storage::disk('public')->exists($path)) {
+            return $path;
+        }
+
+        $contents = file_get_contents($avatarUrl);
+        Storage::disk('public')->put($path, $contents);
+
+        return $path;
     }
 }
