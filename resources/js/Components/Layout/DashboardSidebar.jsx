@@ -3,14 +3,14 @@ import { usePage, Link } from "@inertiajs/react";
 const menuItems = [
     { href: "/dashboard", icon: "fa-solid fa-house", label: "Dashboard" },
     { href: "/dashboard/users", icon: "fa-solid fa-users", label: "Users" },
-    { href: "/dashboard/posts", icon: "fa-solid fa-file", label: "Posts" }
+    { href: "/dashboard/posts", icon: "fa-solid fa-file", label: "Posts" },
 ];
 
 export default function DashboardSidebar({ sidebarOpen }) {
     const { props, url } = usePage();
     const { appName } = props;
 
-    const isActive = href => url === href;
+    const isActive = (href) => url === href;
 
     return (
         <aside
@@ -23,7 +23,7 @@ export default function DashboardSidebar({ sidebarOpen }) {
         >
             {/* Logo */}
             <div className="flex items-center gap-3 px-4 py-5 border-b border-primary">
-                <span className="text-xl">🚀</span>  
+                <span className="text-xl">🚀</span>
                 <span className="font-bold text-sm tracking-wide uppercase">
                     {appName}
                 </span>
@@ -31,7 +31,7 @@ export default function DashboardSidebar({ sidebarOpen }) {
 
             {/* Menu */}
             <nav className="flex-1 flex flex-col gap-1 px-2 py-4">
-                {menuItems.map(item => (
+                {menuItems.map((item) => (
                     <Link
                         key={item.href}
                         href={item.href}
@@ -46,7 +46,10 @@ export default function DashboardSidebar({ sidebarOpen }) {
                             }
                         `}
                     >
-                        <i className={`${item.icon} w-5`}></i>
+                        <i
+                            className={`${item.icon} w-5`}
+                            aria-hidden="true"
+                        ></i>
                         <span>{item.label}</span>
                     </Link>
                 ))}
@@ -61,7 +64,10 @@ export default function DashboardSidebar({ sidebarOpen }) {
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-red-500/20
                         text-sm font-medium transition-colors duration-150"
                 >
-                    <i className="fa-solid fa-right-from-bracket text-base"></i>
+                    <i
+                        className="fa-solid fa-right-from-bracket text-base"
+                        aria-hidden="true"
+                    ></i>
                     <span>Logout</span>
                 </Link>
             </div>

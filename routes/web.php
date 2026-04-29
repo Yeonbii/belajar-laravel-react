@@ -20,3 +20,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/dashboard/users', [DashboardUserController::class, 'index'])->name('dashboard.users.index');
     Route::post('/dashboard/users', [DashboardUserController::class, 'store'])->name('dashboard.users.store');
 });
+
+Route::get('/auth/google', [AuthController::class, 'redirect']);
+Route::get('/auth/google/callback', [AuthController::class, 'callback']);

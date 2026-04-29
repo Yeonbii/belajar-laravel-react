@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use Laravel\Socialite\Socialite;
 
 class AuthController extends Controller
 {
@@ -24,7 +26,7 @@ class AuthController extends Controller
             'email'    => ['required', 'email'],
             'password' => ['required'],
         ]);
-        
+
         $remember = $request->boolean('remember'); // 🔥 penting
 
         // Coba login
@@ -49,5 +51,29 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->back();
+    }
+
+    public function redirect()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function callback()
+    {
+        $googleUser = Socialite::driver('google')->user();
+
+        $user = User::updateOrCreate(
+            ['email' => $googleUser->email],
+            [
+                'name' => $googleUser->name,
+                'google_id' => $googleUser->id,
+                'avatar' => $googleUser->avatar,
+            ]
+        );
+        
+        // ✅ aktifkan remember me
+        Auth::login($user, true);
+
+        return redirect('/dashboard');
     }
 }

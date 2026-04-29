@@ -2,9 +2,18 @@ import { useMemo } from "react";
 import Img from "./Img";
 
 export default function Avatar({ name, avatarUrl = null }) {
-    // Kalau ada avatar, buat URL lengkapnya
-    // "/storage/avatars/namafile.jpg"
-    const avatarSrc = avatarUrl ? `/storage/${avatarUrl}` : null;
+    // ✅ Cek apakah URL external (Google)
+    const avatarSrc = useMemo(() => {
+        if (!avatarUrl) return null;
+
+        // kalau sudah URL lengkap (http/https)
+        if (avatarUrl.startsWith("http")) {
+            return avatarUrl;
+        }
+
+        // kalau lokal (storage)
+        return `/storage/${avatarUrl}`;
+    }, [avatarUrl]);
 
     const initials = useMemo(() => {
         if (!name) return "";
