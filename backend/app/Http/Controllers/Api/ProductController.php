@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -53,6 +54,20 @@ class ProductController extends Controller
             'slug' => $slug,
         ]);
 
-        return new ProductResource($product);
+        // return new ProductResource($product);
+        return (new ProductResource($product))->response()->setStatusCode(201);
     }
+    
+    public function update(UpdateProductRequest $request, Product $product)
+{
+    $validated = $request->validated();
+
+    if (isset($validated['name'])) {
+        $validated['slug'] = $this->generateSlug($validated['name']);
+    }
+
+    $product->update($validated);
+
+    return new ProductResource($product);
+}
 }

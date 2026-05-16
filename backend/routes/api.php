@@ -10,7 +10,7 @@ Route::get('/user', function (Request $request) {
 
 // Route::get('/products', [ProductController::class, 'index']);
 Route::apiResource('products', ProductController::class)
-    ->only(['index', 'show', 'store'])
+    ->only(['index', 'show', 'store', 'update'])
     ->scoped([
         'product' => 'slug',
     ]);
